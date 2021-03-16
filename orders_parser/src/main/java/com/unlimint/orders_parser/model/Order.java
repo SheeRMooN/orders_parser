@@ -1,4 +1,4 @@
-package com.unlimint.orders_parser;
+package com.unlimint.orders_parser.model;
 
 import org.springframework.stereotype.Component;
 

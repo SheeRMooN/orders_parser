@@ -1,6 +1,9 @@
 package com.unlimint.orders_parser;
 
 
+import com.unlimint.orders_parser.model.Order;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,26 +11,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Orders {
+@Component
+public class Orders  {
+    public  void rundMain(String filePath1, String filePath2)  {
 
-    public static void main(String[] args) throws IOException {
-        String filePath1 = null;
-        String filePath2 = null;
-        String fileName1 = null;
-        String fileName2 = null;
-        if (args.length != 2){
-            System.out.println("Enter two filenames");
-//            filePath1 = "C:\\Users\\SheeRMooN\\Desktop\\parse1.csv";
-//            filePath2 = "C:\\Users\\SheeRMooN\\Desktop\\parse2.json";
-//            fileName1 = new File(filePath1).getName();
-//            fileName2 = new File(filePath2).getName();
-            return;
-        }else {
-            filePath1 = args[0];
-            filePath2 = args[1];
-             fileName1 = new File(filePath1).getName();
-             fileName2 = new File(filePath2).getName();
-        }
+
+        String fileName1 = new File(filePath1).getName();
+        String fileName2 = new File(filePath2).getName();
+
+
 
         List<String> stringList1 = new LinkedList<>();
         List<String> stringList2 = new LinkedList<>();
@@ -51,7 +43,8 @@ public class Orders {
         stdout(orderList1);
     }
 
-    private static void validatorOrders(List<Order> allOrder) {
+
+    private  void validatorOrders(List<Order> allOrder) {
         String report = "OK";
 
         Iterator<Order> iterator = allOrder.iterator();
@@ -78,7 +71,7 @@ public class Orders {
         }
     }
 
-    private static void stdout(List<Order> allOrders) {
+    private  void stdout(List<Order> allOrders) {
 
 
         Iterator iterator = allOrders.iterator();
@@ -89,7 +82,7 @@ public class Orders {
 
 
 
-    public static List<Order> addOrders(List<String> list, String fileName, String regex){
+    public  List<Order> addOrders(List<String> list, String fileName, String regex){
         List<Order> orderList = new LinkedList<>();
 
         int count = 1;
@@ -117,7 +110,7 @@ public class Orders {
         return orderList;
     }
 
-    public static List<String> readFile(List<String> list,String fileName){
+    public  List<String> readFile(List<String> list,String fileName){
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
             while (reader.ready()){
                 list.add(reader.readLine());
@@ -131,7 +124,7 @@ public class Orders {
     }
 
 
-    private static String getRegex(String fileName){
+    private  String getRegex(String fileName){
         String type = fileName.substring(fileName.indexOf('.'), fileName.length());
         String regex = null;
         switch (type){
@@ -148,6 +141,4 @@ public class Orders {
 
         return regex;
     }
-
-
 }
