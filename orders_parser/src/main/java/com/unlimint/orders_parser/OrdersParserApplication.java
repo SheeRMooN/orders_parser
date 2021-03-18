@@ -19,7 +19,7 @@ public class OrdersParserApplication  {
 //					"C:\\Users\\SheeRMooN\\Desktop\\parse1.csv",
 //					"C:\\Users\\SheeRMooN\\Desktop\\parse2.json");
 		}else
-			System.out.println("Enter two file");
+			System.out.println("Enter two file name");
 
 	}
 }

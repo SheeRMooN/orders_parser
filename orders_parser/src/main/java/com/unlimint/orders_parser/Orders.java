@@ -2,6 +2,9 @@ package com.unlimint.orders_parser;
 
 
 import com.unlimint.orders_parser.model.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -12,75 +15,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@Scope("prototype")
 public class Orders  {
-    public  void rundMain(String filePath1, String filePath2)  {
-
-
-        String fileName1 = new File(filePath1).getName();
-        String fileName2 = new File(filePath2).getName();
-
-
-
-        List<String> stringList1 = new LinkedList<>();
-        List<String> stringList2 = new LinkedList<>();
-
-        String regex1 = getRegex(filePath1);
-        String regex2 = getRegex(filePath2);
-        if (regex1 == null | regex2 == null){
-            System.out.println("Incorrect file format");
-            return;
-        }
-
-        readFile(stringList1, filePath1);
-        readFile(stringList2, filePath2);
-
-        List<Order> orderList1 = addOrders(stringList1, fileName1, regex1);
-        List<Order> orderList2 = addOrders(stringList2, fileName2, regex2);
-
-        orderList1.addAll(orderList2);
-        validatorOrders(orderList1);
-
-        stdout(orderList1);
-    }
-
-
-    private  void validatorOrders(List<Order> allOrder) {
-        String report = "OK";
-
-        Iterator<Order> iterator = allOrder.iterator();
-        while (iterator.hasNext()){
-            Order order = iterator.next();
-            try {
-                int id = Integer.valueOf(order.getId());
-
-
-            }catch (NumberFormatException e){
-                report = "Error format id";
-            }
-            try {
-                double amount = Double.valueOf(order.getAmount());
-
-            }catch (NumberFormatException e){
-                report = "Error format amount";
-            }
-            if (!order.getCurrency().equals("USD") & !order.getCurrency().equals("EUR")){
-                System.out.println(order.getCurrency());
-                report = "Error format currency";
-            }
-            order.setResult(report);
-        }
-    }
-
-    private  void stdout(List<Order> allOrders) {
-
-
-        Iterator iterator = allOrders.iterator();
-        while (iterator.hasNext()){
-            System.out.println(iterator.next().toString());
-        }
-    }
-
-
+    String fileName;
+    List<String> stringList = new LinkedList<>();
+    String regex;
+    @Autowired
+    Order order;
 
     public  List<Order> addOrders(List<String> list, String fileName, String regex){
         List<Order> orderList = new LinkedList<>();
@@ -93,17 +34,27 @@ public class Orders  {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(str);
             while (matcher.find()) {
-                orderList.add(
-                        new Order(
-                                String.valueOf(matcher.group(1)),
-                                String.valueOf(matcher.group(2)),
-                                String.valueOf(matcher.group(3)),
-                                String.valueOf(matcher.group(4)),
-                                fileName,
-                                count,
-                                result
-                        )
-                );
+                Order order = getOrder();
+                //    public Order(String id, String amount, String currency, String comment, String filename, int line, String result) {
+                order.setId(String.valueOf(matcher.group(1)));
+                order.setAmount(String.valueOf(matcher.group(2)));
+                order.setCurrency(String.valueOf(matcher.group(3)));
+                order.setComment(String.valueOf(matcher.group(4)));
+                order.setFilename(fileName);
+                order.setLine(count);
+                order.setResult(result);
+                orderList.add(order);
+//                orderList.add(
+//                        order.(
+//                                String.valueOf(matcher.group(1)),
+//                                String.valueOf(matcher.group(2)),
+//                                String.valueOf(matcher.group(3)),
+//                                String.valueOf(matcher.group(4)),
+//                                fileName,
+//                                count,
+//                                result
+//                        )
+//                );
             }
             count++;
         }
@@ -124,7 +75,7 @@ public class Orders  {
     }
 
 
-    private  String getRegex(String fileName){
+    public   String getRegexs(String fileName){
         String type = fileName.substring(fileName.indexOf('.'), fileName.length());
         String regex = null;
         switch (type){
@@ -140,5 +91,9 @@ public class Orders  {
         }
 
         return regex;
+    }
+    @Lookup
+    public Order getOrder(){
+        return null;
     }
 }
