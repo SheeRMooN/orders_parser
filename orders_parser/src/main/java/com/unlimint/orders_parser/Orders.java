@@ -5,6 +5,7 @@ import com.unlimint.orders_parser.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -17,12 +18,13 @@ import java.util.regex.Pattern;
 @Component
 @Scope("prototype")
 public class Orders  {
-    String fileName;
-    List<String> stringList = new LinkedList<>();
-    String regex;
     @Autowired
     Order order;
+    String fileName;
+    String regex;
+    List<String> stringList = new LinkedList<>();
 
+    @Async
     public  List<Order> addOrders(List<String> list, String fileName, String regex){
         List<Order> orderList = new LinkedList<>();
 
@@ -35,7 +37,6 @@ public class Orders  {
             Matcher matcher = pattern.matcher(str);
             while (matcher.find()) {
                 Order order = getOrder();
-                //    public Order(String id, String amount, String currency, String comment, String filename, int line, String result) {
                 order.setId(String.valueOf(matcher.group(1)));
                 order.setAmount(String.valueOf(matcher.group(2)));
                 order.setCurrency(String.valueOf(matcher.group(3)));
@@ -44,23 +45,13 @@ public class Orders  {
                 order.setLine(count);
                 order.setResult(result);
                 orderList.add(order);
-//                orderList.add(
-//                        order.(
-//                                String.valueOf(matcher.group(1)),
-//                                String.valueOf(matcher.group(2)),
-//                                String.valueOf(matcher.group(3)),
-//                                String.valueOf(matcher.group(4)),
-//                                fileName,
-//                                count,
-//                                result
-//                        )
-//                );
             }
             count++;
         }
         return orderList;
     }
 
+    @Async
     public  List<String> readFile(List<String> list,String fileName){
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
             while (reader.ready()){
@@ -75,6 +66,7 @@ public class Orders  {
     }
 
 
+    @Async
     public   String getRegexs(String fileName){
         String type = fileName.substring(fileName.indexOf('.'), fileName.length());
         String regex = null;

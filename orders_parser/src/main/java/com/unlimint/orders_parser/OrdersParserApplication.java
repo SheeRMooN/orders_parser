@@ -13,13 +13,14 @@ public class OrdersParserApplication  {
 		if (args.length == 2) {
 			Parser parser = context.getBean("parser", Parser.class);
 			parser.runParseFiles(args[0], args[1]);
+		}
 //		}else if (args.length == 0){
 //			Parser parser = context.getBean("parser", Parser.class);
 //			parser.runParseFiles(
 //					"C:\\Users\\SheeRMooN\\Desktop\\parse1.csv",
 //					"C:\\Users\\SheeRMooN\\Desktop\\parse2.json");
-		}else
-			System.out.println("Enter two file name");
+//		}else
+//			System.out.println("Enter two file name");
 
 	}
 }
